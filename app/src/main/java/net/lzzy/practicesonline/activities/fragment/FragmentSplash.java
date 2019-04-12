@@ -23,7 +23,7 @@ public class FragmentSplash extends BaseFragment {
         int pos = Calendar.getInstance().get(Calendar.SECOND) % 3;
         wall.setBackgroundResource(imgs[pos]);
         wall.setOnClickListener(v -> {
-            listener.canclCount();
+            listener.cancelCount();
         });
 
     }
@@ -55,6 +55,9 @@ public class FragmentSplash extends BaseFragment {
     }
 
     public interface OnSplashFinishedListener {
-        void canclCount();
+        /**
+         * 取消计时
+         */
+        void cancelCount();
     }
 }

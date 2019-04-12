@@ -1,55 +1,79 @@
 package net.lzzy.practicesonline.activities.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.view.Window;
+import android.os.Message;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
 import net.lzzy.practicesonline.R;
 import net.lzzy.practicesonline.activities.fragment.FragmentSplash;
+import net.lzzy.practicesonline.activities.utils.AbstractStaticHandler;
 import net.lzzy.practicesonline.activities.utils.AppUtils;
+
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author Administrator
  */
-public class SplashActivity extends AppCompatActivity implements FragmentSplash.OnSplashFinishedListener {
+public class SplashActivity extends BaseActivity implements FragmentSplash.OnSplashFinishedListener {
 
+    int seconds=20;
+    private SplashHandler handler=new SplashHandler(this);
+    private static class SplashHandler extends AbstractStaticHandler<SplashActivity>{
+
+        public SplashHandler(SplashActivity context) {
+            super(context);
+        }
+
+        @Override
+        public void handleMessage(Message msg, SplashActivity splashActivity) {
+
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_splash);
-        AppUtils.addActivity(this);
-        FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentById(R.id.fragment_container);
-        if (fragment==null){
-            fragment=new FragmentSplash();
-            manager.beginTransaction().add(R.id.fragment_container, fragment).commit();
-            //事务 manager.beginTransaction()
+        if (!AppUtils.isNetworkAvailable()){
+            new AlertDialog.Builder(this)
+                    .setMessage("网络不可用，是否继续")
+                    .setNegativeButton("退出",(dialog, which) -> AppUtils.exit())
+                    .setPositiveButton("确定",(dialog, which) -> gotoMain())
+                    .show();
+        }else {
+            ThreadPoolExecutor executor=AppUtils.getExecutor();
+            executor.execute(this::couDown);
         }
+    }
+
+    private void couDown() {
+        while (seconds>=0){
+
+        }
+    }
+
+
+    private void gotoMain() {
 
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        AppUtils.removeActivity(this);
+    public int getLayout() {
+        return R.layout.activity_splash;
     }
 
     @Override
-    public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setMessage("取消")
-                .setPositiveButton("确定",(dialog, which) -> AppUtils.exit())
-        .show();
+    public int getContainerId() {
+        return R.id.fragment_container;
     }
 
     @Override
-    public void canclCount() {
+    public Fragment createFragment() {
+        return new FragmentSplash();
+    }
+
+
+    @Override
+    public void cancelCount() {
 
     }
 }
