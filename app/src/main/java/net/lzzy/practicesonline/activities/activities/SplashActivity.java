@@ -21,7 +21,7 @@ public class SplashActivity extends BaseActivity implements FragmentSplash.OnSpl
     public static final int WHAT_COUNTING = 0;
     public static final int WHAT_EXCEPTION = 1;
     public static final int WHAT_COUNT_DONE = 2;
-    int seconds = 9;
+    int seconds = 20;
     private SplashHandler handler = new SplashHandler(this);
     private TextView tvCount;
 
