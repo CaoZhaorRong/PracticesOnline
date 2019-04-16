@@ -3,9 +3,15 @@ package net.lzzy.practicesonline.activities.utils;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Pair;
 
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -22,19 +28,24 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Description:
  */
 public class AppUtils extends Application {
-    private static Context context;
+    public static final String URL_ID = "url";
+    public static final String URL_PORT = "urlPort";
+    public static final String SP_SETTING = "spSetting";
+    private static WeakReference<Context> wContext;
     private static List<Activity> activities = new LinkedList<>();
     private static String runningActivity;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
-        context = getApplicationContext();
+        wContext = new WeakReference<>(this);
     }
 
     public static Context getContext() {
-        return context;
+        return wContext.get();
     }
+    //region Activity的集中管理
 
     public static void addActivity(Activity activity) {
         activities.add(activity);
@@ -43,38 +54,46 @@ public class AppUtils extends Application {
     public static void removeActivity(Activity activity) {
         activities.remove(activity);
     }
-    public static void exit(){
-      for (Activity activity:activities){
-          if (activity!=null){
-              activity.finish();
-          }
-      }
-      System.exit(0);
+
+    public static void exit() {
+        for (Activity activity : activities) {
+            if (activity != null) {
+                activity.finish();
+            }
+        }
+        System.exit(0);
     }
-    public static Activity getRunningActivity(){
-        for (Activity activity:activities){
+
+    public static Activity getRunningActivity() {
+        for (Activity activity : activities) {
             //首先取到activity的名字
-            String name=activity.getLocalClassName();
-            if (AppUtils.runningActivity.equals(name)){
+            String name = activity.getLocalClassName();
+            if (AppUtils.runningActivity.equals(name)) {
                 return activity;
             }
         }
         return null;
     }
-    public static void setRunning(String runningActivity){
-        AppUtils.runningActivity=runningActivity;
+
+    public static void setRunning(String runningActivity) {
+        AppUtils.runningActivity = runningActivity;
     }
-    public static  void setStopped(String stoppedActivity){
-        if (stoppedActivity.equals(AppUtils.runningActivity)){
-            AppUtils.runningActivity="";
+
+    public static void setStopped(String stoppedActivity) {
+        if (stoppedActivity.equals(AppUtils.runningActivity)) {
+            AppUtils.runningActivity = "";
         }
     }
-    public static boolean isNetworkAvailable(){
-        ConnectivityManager manager= (ConnectivityManager) getContext()
+    //endregion
+    //region 检测网络不可用
+
+    public static boolean isNetworkAvailable() {
+        ConnectivityManager manager = (ConnectivityManager) getContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info=manager.getActiveNetworkInfo();
-        return info !=null && info.isConnected();
+        NetworkInfo info = manager != null ? manager.getActiveNetworkInfo() : null;
+        return info != null && info.isConnected();
     }
+    //endregion
     //region 创建线程池执行
 
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
@@ -97,7 +116,33 @@ public class AppUtils extends Application {
         executor.allowCoreThreadTimeOut(true);
         return executor;
     }
+    //endregion
+    //region 尝试连接的方法
 
+    public static void tryConnectServer(String address) throws IOException {
+        URL url = new URL(address);
+        //建立一个连接
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout(5000);
+        connection.getContent();
+    }
+    //endregion
+    //region SharedPreferences保存数据
+
+    public static void saveServerSetting(String ip, String port, Context context) {
+        SharedPreferences spSetting = context.getSharedPreferences(SP_SETTING, MODE_PRIVATE);
+        spSetting.edit()
+                .putString(URL_ID, ip)
+                .putString(URL_PORT, port)
+                .apply();
+    }
+
+    public static Pair<String, String> loadServerSetting(Context context) {
+        SharedPreferences spSetting = context.getSharedPreferences(SP_SETTING, MODE_PRIVATE);
+        String ip = spSetting.getString(URL_ID, "10.88.91.102");
+        String port = spSetting.getString(URL_PORT, "888");
+        return new Pair<>(ip, port);
+    }
     //endregion
 
 
