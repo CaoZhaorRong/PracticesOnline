@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -92,6 +93,10 @@ public class SplashActivity extends BaseActivity implements FragmentSplash.OnSpl
             executor.execute(this::detectServerStatus);
         }
         tvCount = findViewById(R.id.activity_splash_tv_copy_right);
+        tvCount.setOnClickListener(v -> {
+            seconds = 0;
+        });
+
     }
 
     private void couDown() {
@@ -141,6 +146,5 @@ public class SplashActivity extends BaseActivity implements FragmentSplash.OnSpl
 
     @Override
     public void cancelCount() {
-        seconds = 0;
     }
 }
