@@ -6,7 +6,9 @@ import android.os.Message;
 import java.lang.ref.WeakReference;
 
 /**
- * Created by lzzy_gxy on 2019/4/12.
+ *
+ * @author lzzy_gxy
+ * @date 2019/4/12
  * Description:
  */
 public abstract class AbstractStaticHandler<T> extends Handler {

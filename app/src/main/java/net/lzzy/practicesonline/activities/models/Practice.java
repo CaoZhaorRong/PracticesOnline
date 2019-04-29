@@ -1,23 +1,30 @@
 package net.lzzy.practicesonline.activities.models;
 
+import net.lzzy.practicesonline.activities.constants.ApiConstants;
 import net.lzzy.sqllib.Ignored;
+import net.lzzy.sqllib.Jsonable;
 import net.lzzy.sqllib.Sqlitable;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Date;
 
 /**
- *
  * @author lzzy_gxy
  * @date 2019/4/16
  * Description:
  */
-public class Practice extends BaseEntity implements Sqlitable {
+public class Practice extends BaseEntity implements Sqlitable, Jsonable {
     @Ignored
-    public static final String COL_API_ID = "apiId";
+    public static final String COL_NAME="name";
     @Ignored
-    public static final String COL_NAME = "name";
+    public static final String COL_OUTLINES="outlines";
+    @Ignored
+    public static final String COL_API_ID="apiId";
     private String name;
     private int questionCount;
+    private String outlines;
     private Date downloadDate;
     private boolean isDownloaded;
     private int apiId;
@@ -36,6 +43,14 @@ public class Practice extends BaseEntity implements Sqlitable {
 
     public void setQuestionCount(int questionCount) {
         this.questionCount = questionCount;
+    }
+
+    public String getOutlines() {
+        return outlines;
+    }
+
+    public void setOutlines(String outlines) {
+        this.outlines = outlines;
     }
 
     public Date getDownloadDate() {
@@ -65,5 +80,19 @@ public class Practice extends BaseEntity implements Sqlitable {
     @Override
     public boolean needUpdate() {
         return false;
+    }
+
+    @Override
+    public JSONObject toJson() throws JSONException {
+        return null;
+    }
+
+    @Override
+    public void fromJson(JSONObject json) throws JSONException {
+        apiId =json.getInt(ApiConstants.JSON_PRACTICES_API_ID);
+        name=json.getString(ApiConstants.JSON_PRACTICES_NAME);
+        questionCount=json.getInt(ApiConstants.JSON_PRACTICES_QUESTION_COUNT);
+        outlines=json.getString(ApiConstants.JSON_PRACTICES_OUT_LINES);
+        downloadDate=new Date();
     }
 }

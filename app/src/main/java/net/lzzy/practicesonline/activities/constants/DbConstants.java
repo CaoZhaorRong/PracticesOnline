@@ -15,11 +15,9 @@ public final class DbConstants {
     private static final String DB_NAME="practices.db";
     private static final int DB_VERSION=1;
 
-    public static DbPackager packager;
-    static {
-        packager= DbPackager.getInstance(AppUtils.getContext(),
+    public static DbPackager packager= DbPackager.getInstance(AppUtils.getContext(),
                 DB_NAME,DB_VERSION, R.raw.models);
-    }
+
 
 }
 

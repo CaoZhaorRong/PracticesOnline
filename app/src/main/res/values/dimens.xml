@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="circle_tv">50dp</dimen>
+
+    <dimen name="layoutMargin">10dp</dimen>
+    <dimen name="listMargin">8dp</dimen>
+    <dimen name="titleSize1">15sp</dimen>
+    <dimen name="titleSize">18sp</dimen>
+    <dimen name="numberSize">15sp</dimen>
+    <dimen name="roundCorner">6dp</dimen>
+    <dimen name="itemSize">3dp</dimen>
 </resources>

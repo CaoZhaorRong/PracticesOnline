@@ -14,6 +14,9 @@ import net.lzzy.practicesonline.activities.utils.AppUtils;
  * Description:
  */
 public abstract class BaseActivity extends AppCompatActivity {
+
+    private Fragment fragment;
+
     public BaseActivity() {
     }
 
@@ -24,13 +27,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(getLayout());
         AppUtils.addActivity(this);
         FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentById(getContainerId());
+        fragment = manager.findFragmentById(getContainerId());
         if (fragment == null) {
             fragment = createFragment();
             manager.beginTransaction().add(getContainerId(), fragment).commit();
             //事务 manager.beginTransaction()
         }
 
+    }
+
+    protected Fragment getFragment(){
+        return fragment;
     }
 
     /**

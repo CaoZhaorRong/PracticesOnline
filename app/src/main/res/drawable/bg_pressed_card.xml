@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--阴影效果-->
+    <item
+        android:left="3dp"
+        android:top="3dp">
+        <shape android:shape="rectangle" >
+            <gradient android:startColor="#0F000000"
+                android:endColor="#0F000000"/>
+            <corners
+                android:topLeftRadius="@dimen/roundCorner"
+                android:topRightRadius="@dimen/roundCorner"
+                android:bottomLeftRadius="@dimen/roundCorner"
+                android:bottomRightRadius="@dimen/roundCorner"/>
+        </shape>
+
+    </item>
+    <!--卡片效果-->
+    <item
+        android:right="@dimen/itemSize"
+        android:bottom="@dimen/itemSize">
+        <shape android:shape="rectangle">
+            <gradient android:endColor="#999999"
+                android:startColor="#999999"/>
+            <corners
+                android:topLeftRadius="@dimen/roundCorner"
+                android:topRightRadius="@dimen/roundCorner"
+                android:bottomLeftRadius="@dimen/roundCorner"
+                android:bottomRightRadius="@dimen/roundCorner"/>
+        </shape>
+    </item>
+
+</layer-list>
