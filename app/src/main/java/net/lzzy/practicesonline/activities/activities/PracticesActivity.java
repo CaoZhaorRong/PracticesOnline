@@ -28,6 +28,7 @@ public class PracticesActivity extends BaseActivity implements PracticesFragment
 
     public static final String API_ID = "apiId";
     public static final String EXTRA_LOCAL_COUNT = "extraLocalCount";
+    public static final String PRACTICES_ID = "practicesId";
     public ServiceConnection connection;
     private boolean refresh=false;
 
@@ -124,6 +125,7 @@ public class PracticesActivity extends BaseActivity implements PracticesFragment
     @Override
     public void onQuestionSelected(String practicesId, int apiId) {
         Intent intent = new Intent(this, QuestionActivity.class);
+        intent.putExtra(PRACTICES_ID,practicesId);
         intent.putExtra(API_ID, apiId);
         startActivity(intent);
     }

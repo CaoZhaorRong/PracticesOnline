@@ -34,7 +34,7 @@ public class QuestionFactory {
 
     private void completeQuestion(Question question) throws InstantiationException, IllegalAccessException {
         List<Option> options = optionRepository.getByKeyword(question.getId().toString(),
-                new String[]{Option.COL_API_ID,Option.COL_CONTENT,Option.COL_LABLE}, true);
+                new String[]{Option.COL_QUESTION_ID}, true);
         question.setOptions(options);
         question.setDbType(question.getDbType());
     }
@@ -65,19 +65,19 @@ public class QuestionFactory {
 
     }
 
-    public List<Question> getByPractice(String id) {
-        try {
-            List<Question> questions = repository.getByKeyword(id, new String[]{Question.COL_PRACTICE_ID}, true);
-            for (Question question : questions) {
-                completeQuestion(question);
-            }
-            return questions;
-        } catch (IllegalAccessException | InstantiationException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-
-    }
+   public List<Question> getByPractice(String practice) {
+       try {
+           List<Question> questions = repository.getByKeyword(practice
+                   , new String[]{Question.COL_PRACTICE_ID}, true);
+           for (Question question:questions){
+               completeQuestion(question);
+           }
+           return questions;
+       } catch (IllegalAccessException |InstantiationException e) {
+           e.printStackTrace();
+       }
+       return new ArrayList<>();
+   }
 
     public List<String> delete(Question question) {
         List<String> sqlActions = new ArrayList<>();

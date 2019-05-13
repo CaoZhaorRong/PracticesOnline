@@ -49,5 +49,18 @@ public class ApiConstants {
     public static final String JSON_OPTIONS_API_ID="Id";
     public static final String JSON_ANSWER_OPTION_ID="OptionId";
 
+    /**
+     * 提交结果
+     */
+    private static final String ACTION_RESULT="/api/result/PracticeResult";
+    public static final String URL_RESULT=URL_API.concat(ACTION_RESULT);
+    /**
+     * PraticeResult字段
+     */
+    public static final String JSON_RESULT_API_ID = "PracticeID";
+    public static final String JSON_RESULT_SCRORE_RATIO = "ScroreRatio";
+    public static final String JSON_RESULT_WRONG_QUESTION_IDS = "WrongQuestionIds";
+    public static final String JSON_RESULT_PHONE_NO = "PhoneNo";
+
 
 }

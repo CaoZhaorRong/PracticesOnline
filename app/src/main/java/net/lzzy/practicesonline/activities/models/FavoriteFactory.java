@@ -46,9 +46,9 @@ public class FavoriteFactory {
     }
 
 
-    private boolean isQuestionStarred(String id) {
+    public boolean isQuestionStarred(String id) {
         try {
-            List<Favorite> favorites = repository.getByKeyword(id,new  String[]{""},true);
+            List<Favorite> favorites = repository.getByKeyword(id,new  String[]{Favorite.STATION_ID},true);
             return favorites.size()>0;
         } catch (IllegalAccessException |InstantiationException e) {
             e.printStackTrace();

@@ -156,16 +156,16 @@ public class ApiService {
         return (T) obj;
     }
 
-    public  static int okPost(String address,JSONObject json) throws IOException {
-        RequestBody body=RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
-                json.toString()
-        );
+    public static int okPost(String address, JSONObject json) throws IOException {
+        //请求体
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
+                json.toString());
         Request request = new Request.Builder()
                 .url(address)
-                .post(body)
+                .post(requestBody)
                 .build();
-        try (Response response = CLIENT.newCall(request).execute()) {
-                return response.code();
+        try(Response response = CLIENT.newCall(request).execute()){
+            return response.code();
         }
     }
     public static  String okRequest(String address,JSONObject json)throws IOException{

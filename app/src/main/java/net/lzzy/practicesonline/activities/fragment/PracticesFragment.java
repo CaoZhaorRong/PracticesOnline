@@ -83,7 +83,7 @@ public class PracticesFragment extends BaseFragment {
             switch (msg.what) {
                 case WHAT_PRACTICE_DOWN:
                     fragment.tvTime.setText(DateTimeUtils.DATE_TIME_FORMAT.format(new Date()));
-                    UserCookies.getInstance().updateeLastRefreshTime();
+                    UserCookies.getInstance().updateLastRefreshTime();
                     try {
                         List<Practice> practices = PracticeService.getPractices(msg.obj.toString());
                         for (Practice practice : practices) {
@@ -182,7 +182,7 @@ public class PracticesFragment extends BaseFragment {
             super.onPostExecute(s);
             PracticesFragment fragment = this.fragment.get();
             fragment.tvTime.setText(DateTimeUtils.DATE_TIME_FORMAT.format(new Date()));
-            UserCookies.getInstance().updateeLastRefreshTime();
+            UserCookies.getInstance().updateLastRefreshTime();
             try {
                 List<Practice> practices = PracticeService.getPractices(s);
                 for (Practice practice : practices) {
@@ -215,7 +215,7 @@ public class PracticesFragment extends BaseFragment {
 
     private void finishRefresh() {
         //region 随机生成数据
-        for (int i = 0; i < 20; i++) {
+    /*    for (int i = 0; i < 20; i++) {
             Practice practice = new Practice();
             practice.setDownloaded(false);
             practice.setDownloadDate(new Date());
@@ -223,7 +223,7 @@ public class PracticesFragment extends BaseFragment {
             practice.setOutlines(i + practice.getId().toString());
             practices.add(practice);
         }
-        adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();*/
 
         //endregion
 
@@ -275,7 +275,7 @@ public class PracticesFragment extends BaseFragment {
         practices = factory.get();
         Collections.sort(practices, (o1, o2) ->
                 o2.getDownloadDate().compareTo(o1.getDownloadDate()));
-        adapter = new GenericAdapter<Practice>(getActivity(), R.layout.item, practices) {
+        adapter = new GenericAdapter<Practice>(getActivity(), R.layout.practices_item, practices) {
             @Override
             public void populate(ViewHolder holder, Practice practice) {
                 holder.setTextView(R.id.item_name, practice.getName());
