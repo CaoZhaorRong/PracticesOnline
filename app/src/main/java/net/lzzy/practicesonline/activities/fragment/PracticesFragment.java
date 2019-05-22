@@ -3,11 +3,13 @@ package net.lzzy.practicesonline.activities.fragment;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -18,6 +20,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.snackbar.Snackbar;
 
 import net.lzzy.practicesonline.R;
+import net.lzzy.practicesonline.activities.activities.ResultActivity;
 import net.lzzy.practicesonline.activities.models.Practice;
 import net.lzzy.practicesonline.activities.models.PracticeFactory;
 import net.lzzy.practicesonline.activities.models.Question;
@@ -67,10 +70,13 @@ public class PracticesFragment extends BaseFragment {
     private PracticeFactory factory = PracticeFactory.getInstance();
     private OnQuestionSelectedListener listener;
 
+
     //region 线程基本用法
 
     private ThreadPoolExecutor executor = AppUtils.getExecutor();
     private DownloadHandler handler = new DownloadHandler(this);
+
+
 
     private static class DownloadHandler extends AbstractStaticHandler<PracticesFragment> {
 

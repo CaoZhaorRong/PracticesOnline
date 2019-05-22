@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <net.lzzy.practicesonline.activities.fragment.view.BarChartView
+        android:id="@+id/bar_chart"
+        android:layout_width="match_parent"
+        android:paddingTop="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_height="300dp"/>
+
+  <!--  <net.lzzy.practicesonline.activities.fragment.view.LineChartView
+        android:id="@+id/line_chart_view"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="20dp"
+        app:line_color="#ff00ff"
+        app:dot_normal_color="#00ff00"
+        app:dot_selected_color="#0000ff"/>-->
+
+
+    <TextView android:id="@+id/fragment_analysis_tv_chart"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="10dp"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:background="@drawable/circle"
+        android:text="表"/>
+</FrameLayout>

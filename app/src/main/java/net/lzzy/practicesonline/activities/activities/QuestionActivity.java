@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Parcelable;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +20,9 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import net.lzzy.practicesonline.R;
+import net.lzzy.practicesonline.activities.fragment.ChartFragment;
 import net.lzzy.practicesonline.activities.fragment.QuestionFragment;
+import net.lzzy.practicesonline.activities.models.FavoriteFactory;
 import net.lzzy.practicesonline.activities.models.Question;
 import net.lzzy.practicesonline.activities.models.QuestionFactory;
 import net.lzzy.practicesonline.activities.models.UserCookies;
@@ -61,6 +65,7 @@ public class QuestionActivity extends AppCompatActivity {
     private View[] dots;
 
     private DownloadHandler handler = new DownloadHandler(this);
+
     private class DownloadHandler extends AbstractStaticHandler<QuestionActivity> {
 
         private DownloadHandler(QuestionActivity context) {
@@ -70,19 +75,20 @@ public class QuestionActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg, QuestionActivity activity) {
             ViewUtils.dismissPragress();
-            if (msg.what == POST_PRACTICE_DOWN){
+            if (msg.what == POST_PRACTICE_DOWN) {
                 int code = (int) msg.obj;
-                if (code >= RESPONSE_OK_MIN && code<= RESPONSE_OK_MAX){
-                    activity.isCommitted=true;
-                    Toast.makeText(activity,"提交成功",Toast.LENGTH_SHORT).show();
+                if (code >= RESPONSE_OK_MIN && code <= RESPONSE_OK_MAX) {
+                    activity.isCommitted = true;
+                    Toast.makeText(activity, "提交成功", Toast.LENGTH_SHORT).show();
                     UserCookies.getInstance().commitPractice(activity.practiceId);
                     activity.redirect();
-                }else {
-                    Toast.makeText(activity,"提交失败，请重试",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(activity, "提交失败，请重试", Toast.LENGTH_SHORT).show();
                 }
-            }else if (msg.what == POST_EXCEPTION){
-                Toast.makeText(activity,"提交失败，请重试\n"+msg.obj,Toast.LENGTH_SHORT).show();
+            } else if (msg.what == POST_EXCEPTION) {
+                Toast.makeText(activity, "提交失败，请重试\n" + msg.obj, Toast.LENGTH_SHORT).show();
             }
+            //region
            /* switch (msg.what) {
                 case POST_PRACTICE_DOWN:
                      isCommitted=true;
@@ -94,6 +100,7 @@ public class QuestionActivity extends AppCompatActivity {
                     break;
 
             }*/
+            //endregion
         }
     }
 
@@ -160,16 +167,16 @@ public class QuestionActivity extends AppCompatActivity {
     }
 
     private void postResult(PracticeResult result) {
-        ViewUtils.showProgress(this,"正在提交成绩……");
-        AppUtils.getExecutor().execute(()->{
+        ViewUtils.showProgress(this, "正在提交成绩……");
+        AppUtils.getExecutor().execute(() -> {
             try {
                 int code = PracticeService.posRequest(result);
-                handler.sendMessage(handler.obtainMessage(POST_PRACTICE_DOWN,code));
+                handler.sendMessage(handler.obtainMessage(POST_PRACTICE_DOWN, code));
             } catch (JSONException | IOException e) {
-                handler.sendMessage(handler.obtainMessage(POST_EXCEPTION,e.getMessage()));
+                handler.sendMessage(handler.obtainMessage(POST_EXCEPTION, e.getMessage()));
             }
         });
-
+//region
         /*AppUtils.getExecutor().execute(() -> {
             try {
                 int json=PracticeService.posRequest(result);
@@ -183,13 +190,13 @@ public class QuestionActivity extends AppCompatActivity {
                 handler.sendEmptyMessage(POST_EXCEPTION);
             }
         });*/
-
+        //endregion
     }
 
     private void redirect() {
-        List<QuestionResult>results=UserCookies.getInstance().getResultFromCookies(questions);
-        Intent intent=new Intent(this,ResultActivity.class);
-        intent.putExtra(EXTRA_PRACTICE_ID,practiceId);
+        List<QuestionResult> results = UserCookies.getInstance().getResultFromCookies(questions);
+        Intent intent = new Intent(this, ResultActivity.class);
+        intent.putExtra(EXTRA_PRACTICE_ID, practiceId);
         intent.putParcelableArrayListExtra(EXTRA_RESULT, (ArrayList<? extends Parcelable>) results);
         startActivityForResult(intent, REQUEST_CODE_RESULT);
     }
@@ -198,9 +205,35 @@ public class QuestionActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //todo:返回查看数据（全部 or）
+        if (data != null) {
+            if (data.getBooleanExtra(ResultActivity.COLLECT, false)) {
+                FavoriteFactory factory = FavoriteFactory.getInstance();
+                List<Question> questionList = new ArrayList<>();
+                for (Question question : questions) {
+                    if (factory.isQuestionStarred(question.getId().toString())) {
+                        questionList.add(question);
+                    }
+                }
+                questions.clear();
+                questions.addAll(questionList);
+
+                adapter.notifyDataSetChanged();
+                intDost();
+                refreshDots(0);
+
+
+            }
+
+            int page = data.getIntExtra(ResultActivity.RESULT_POSITION, 0);
+            if (page >= 0) {
+                pos = page;
+            }
+            pager.setCurrentItem(pos, true);
+        }
     }
 
     private void intDost() {
+        //底部导航点
         int count = questions.size();
         dots = new View[count];
         layoutDots = findViewById(R.id.activity_question_dots);
@@ -233,6 +266,7 @@ public class QuestionActivity extends AppCompatActivity {
         practiceId = getIntent().getStringExtra(PracticesActivity.PRACTICES_ID);
         apiId = getIntent().getIntExtra(PracticesActivity.API_ID, -1);
         questions = QuestionFactory.getInstance().getByPractice(practiceId);
+        isCommitted = UserCookies.getInstance().isPracticeCommitted(practiceId);
         if (apiId < 0 || questions == null || questions.size() == 0) {
             Toast.makeText(this, "no questions", Toast.LENGTH_SHORT).show();
             finish();
@@ -256,6 +290,8 @@ public class QuestionActivity extends AppCompatActivity {
 
         //ViewPager 第一步首先要有数据 retrieveData()
         adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+
+            int count=0;
             @Override
             public Fragment getItem(int position) {
                 //传数据需要静态工厂
@@ -266,6 +302,21 @@ public class QuestionActivity extends AppCompatActivity {
             @Override
             public int getCount() {
                 return questions.size();
+            }
+
+            @Override
+            public void notifyDataSetChanged() {
+                count=getCount();
+                super.notifyDataSetChanged();
+            }
+
+            @Override
+            public int getItemPosition(@NonNull Object object) {
+                if (count>0){
+                    count--;
+                    return POSITION_NONE;
+                }
+                return super.getItemPosition(object);
             }
         };
         pager.setAdapter(adapter);

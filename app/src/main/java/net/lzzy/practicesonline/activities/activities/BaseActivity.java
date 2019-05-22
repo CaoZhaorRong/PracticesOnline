@@ -1,6 +1,7 @@
 package net.lzzy.practicesonline.activities.activities;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Window;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -16,6 +17,7 @@ import net.lzzy.practicesonline.activities.utils.AppUtils;
 public abstract class BaseActivity extends AppCompatActivity {
 
     private Fragment fragment;
+    private FragmentManager manager;
 
     public BaseActivity() {
     }
@@ -26,7 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(getLayout());
         AppUtils.addActivity(this);
-        FragmentManager manager = getSupportFragmentManager();
+        manager = getSupportFragmentManager();
         fragment = manager.findFragmentById(getContainerId());
         if (fragment == null) {
             fragment = createFragment();
@@ -34,6 +36,9 @@ public abstract class BaseActivity extends AppCompatActivity {
             //事务 manager.beginTransaction()
         }
 
+    }
+    protected FragmentManager getManager(){
+        return manager;
     }
 
     protected Fragment getFragment(){

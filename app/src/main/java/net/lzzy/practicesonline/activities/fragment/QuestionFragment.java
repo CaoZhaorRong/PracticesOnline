@@ -85,9 +85,12 @@ public class QuestionFragment extends BaseFragment {
         imageView = findViewById(R.id.fragment_question_iv_practice);
         tvContent = findViewById(R.id.fragment_question_tv_content);
         rgOptions = findViewById(R.id.fragment_question_option_container);
-        rgOptions.setOnClickListener(v -> new AlertDialog.Builder(getContext())
-                .setMessage(question.getAnalysis())
-                .show());
+        if (isCommitted){
+            rgOptions.setOnClickListener(v -> new AlertDialog.Builder(getContext())
+                    .setMessage(question.getAnalysis())
+                    .show());
+        }
+
     }
 
     private void displayQuestion() {

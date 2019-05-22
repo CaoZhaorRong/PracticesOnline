@@ -34,7 +34,7 @@ public class PracticeResult {
         return info;
     }
 
-    private double getRatio() {
+    public double getRatio() {
         int rightCount = 0;
         for (QuestionResult result : results) {
             if (result.isRight()) {
